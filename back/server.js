@@ -8,6 +8,9 @@ const db = require('./config/keys').mongoURI;
 
 const app = express();
 
+const cors = require('cors');
+app.use(cors());
+
 app.use('/graphql', expressGraphQL({
     schema:schema,
     graphiql:true

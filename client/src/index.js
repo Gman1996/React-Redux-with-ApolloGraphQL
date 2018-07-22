@@ -1,11 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-const Index = () => {
-  return <div> Hello React new22! < /div>;
-};
-
+import App from "./app"
 ReactDOM.render(
-  <Index / > ,
+  <App / > ,
   document.getElementById("root")
 );
