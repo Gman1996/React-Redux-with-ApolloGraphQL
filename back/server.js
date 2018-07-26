@@ -8,6 +8,7 @@ const db = require('./config/keys').mongoURI;
 
 const app = express();
 
+// cors
 const cors = require('cors');
 app.use(cors());
 

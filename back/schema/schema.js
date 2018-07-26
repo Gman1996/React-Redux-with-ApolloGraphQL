@@ -109,9 +109,32 @@ const mutation = new GraphQLObjectType({
                 grade: {type: GraphQLInt}
             },
             resolve(parentValue, args){
+              let toResolve = new studentModel
 
+              toResolve.update(
+                { id: args.id },
+                {
+                  $set: {
+                    name: args.name,
+                    email: args.email,
+                    grade: args.grade
+                  }
+                }
+              );
             }
         },
+        addGender:{
+            type:StudentGenderType,
+            args:{
+                gender: {type: new GraphQLNonNull(GraphQLString)},
+            },
+            resolve(parentValue, args){
+              let toResolve = new studentGenderModel({
+                gender: args.gender,
+              });
+              return toResolve.save();
+            }
+        }
       }
       });
 
