@@ -97,7 +97,7 @@ const mutation = new GraphQLObjectType({
                 id:{type: new GraphQLNonNull(GraphQLString)}
             },
             resolve(parentValue, args){
-
+              return studentModel.findByIdAndRemove(args.id).exec();
             }
         },
         editStudent:{
@@ -109,10 +109,8 @@ const mutation = new GraphQLObjectType({
                 grade: {type: GraphQLInt}
             },
             resolve(parentValue, args){
-              let toResolve = new studentModel
-
-              toResolve.update(
-                { id: args.id },
+              return studentModel.findByIdAndUpdate(
+                args.id,
                 {
                   $set: {
                     name: args.name,
@@ -120,7 +118,10 @@ const mutation = new GraphQLObjectType({
                     grade: args.grade
                   }
                 }
-              );
+              )
+              .catch((err) => {
+                console.log(err)
+              });
             }
         },
         addGender:{

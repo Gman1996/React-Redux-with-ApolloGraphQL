@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 import {graphql, compose} from 'react-apollo';
 import ListStudents from './ListStudents';
-import {getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation} from '../queries/queries';
+import {getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation, deleteStudentMutation} from '../queries/queries';
 
 class StudentForm extends Component {
   constructor(props){
@@ -16,32 +16,47 @@ class StudentForm extends Component {
     };
   }
 
-  toggleStudentsView(e){
+  toggleStudentsView = (e)=>{
     e.preventDefault();
     this.setState (prevState => ({
       toggle: !prevState.toggle
     }));
   }
 
-  studentSubmit(e){
+
+  delete = (id) =>{
+    alert('deleted' + id);
+    this.props.deleteStudentMutation({
+      variables: {
+        id: id,
+      },
+      refetchQueries: [{query: getStudentsQuery}]
+    }).catch((err) => {console.log(err);});
+  }
+
+  edit = (id) =>{
+    alert('edited' + id);
+    //   this.props.editStudentMutation({
+    //   variables: {
+    //     id: '5b54af3b1024641028a153ce',
+    //     name: (this.state.registerName.trim() !== '')?this.state.registerName:'' ,
+    //     email: (this.state.registerEmail.trim() !== '')?this.state.registerEmail:'' ,
+    //     grade: (this.state.registerGrade.trim() !== '')?this.state.registerGrade:'' ,
+    //   }
+    // }).catch((err) => {console.log(err);});
+  }
+
+  studentSubmit = (e) =>{
     e.preventDefault();
 
-    // this.props.addStudentMutation({
-    // variables: {
-    //   name: this.state.registerName,
-    //   email: this.state.registerEmail,
-    //   grade: this.state.registerGrade
-    // }
-    // });
-
-    this.props.editStudentMutation({
+    this.props.addStudentMutation({
     variables: {
-      id: '5b54af3b1024641028a153ce',
-      name: (this.state.registerName.trim() !== '')?this.state.registerName:'' ,
-      email: (this.state.registerEmail.trim() !== '')?this.state.registerEmail:'' ,
-      grade: (this.state.registerGrade.trim() !== '')?this.state.registerGrade:'' ,
-    }
-  }).catch((err) => {console.log(err);});
+      name: this.state.registerName,
+      email: this.state.registerEmail,
+      grade: this.state.registerGrade
+    },
+    refetchQueries: [{query: getStudentsQuery}]
+    });
 
     // this.props.addGenderMutation({
     // variables: {
@@ -62,7 +77,7 @@ class StudentForm extends Component {
       <div>
         {renderHTML}
         <p>
-          <button onClick={(e) => this.toggleStudentsView(e)}>View Students</button>
+          <button type='button' onClick={(e) => this.toggleStudentsView(e)}>View Students</button>
         </p>
 
         <div>
@@ -73,26 +88,30 @@ class StudentForm extends Component {
                 <ListStudents
                   key={student.id}
                   student={student}
+                  delete={(e)=> this.delete(e)}
+                  edit={(e)=> this.edit(e)}
                  />
               );
             }): null
           }
         </div>
-          Register Student
-          <div>
-              <input type="name" onChange={(e) => this.setState({registerName: e.target.value})} placeholder="name"/>
-          </div>
-          <div>
-              <input type="email" onChange={(e) => this.setState({registerEmail: e.target.value})} placeholder="email"/>
-          </div>
-          <div>
-              <input type="name" onChange={(e) => this.setState({registerGender: e.target.value})} placeholder="gender"/>
-          </div>
-          <div>
-              <input type="name" onChange={(e) => this.setState({registerGrade: e.target.value})} placeholder="grade"/>
-          </div>
-          <div>
-              <button onClick={(e) => this.studentSubmit(e)}>Submit</button>
+        <div className='register'>
+            Register Student
+            <div>
+                <input type="name" onChange={(e) => this.setState({registerName: e.target.value})} placeholder="name"/>
+            </div>
+            <div>
+                <input type="email" onChange={(e) => this.setState({registerEmail: e.target.value})} placeholder="email"/>
+            </div>
+            <div>
+                <input type="name" onChange={(e) => this.setState({registerGender: e.target.value})} placeholder="gender"/>
+            </div>
+            <div>
+                <input type="name" onChange={(e) => this.setState({registerGrade: e.target.value})} placeholder="grade"/>
+            </div>
+            <div>
+                <button onClick={(e) => this.studentSubmit(e)}>Submit</button>
+            </div>
           </div>
       </div>
     );
@@ -103,6 +122,7 @@ export default compose(
   graphql(getStudentsQuery,{name: "getStudentsQuery"}),
   graphql(addStudentMutation,{name: "addStudentMutation"}),
   graphql(addGenderMutation,{name: "addGenderMutation"}),
-  graphql(editStudentMutation,{name: "editStudentMutation"})
+  graphql(editStudentMutation,{name: "editStudentMutation"}),
+  graphql(deleteStudentMutation,{name: "deleteStudentMutation"})
 )
 (StudentForm);

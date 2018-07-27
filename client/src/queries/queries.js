@@ -44,4 +44,15 @@ const editStudentMutation = gql `
     }
   }
 `
-export { getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation };
+
+const deleteStudentMutation = gql `
+  mutation($id: String!){
+    deleteStudent(id: $id){
+      id
+      name
+      email
+      grade
+    }
+  }
+`
+export { getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation, deleteStudentMutation };

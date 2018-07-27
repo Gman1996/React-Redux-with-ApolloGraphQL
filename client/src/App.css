@@ -3,5 +3,11 @@ table {
 }
 
 td {
-  border: black 2px solid;
+  border: black 1px solid;
+  padding: 10px;
+  width: 66%;
+}
+
+.register {
+  padding: 10px;
 }
