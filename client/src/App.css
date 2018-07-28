@@ -8,6 +8,6 @@ td {
   width: 66%;
 }
 
-.register {
-  padding: 10px;
+.register div {
+  margin-bottom: 10px;
 }

@@ -11,24 +11,26 @@ class ListStudents extends Component {
   }
 
   handleEdit = (props) =>{
-    this.props.edit(this.props.student.id);
+    this.props.toggleEdit(this.props.student.id);
   }
 
   render(){
     let {student} = this.props;
     return (
-      <table>
-        <tbody>
-          <tr>
-            <td>{student.name}</td>
-            <td>{student.email}</td>
-            <td>{student.gender.gender}</td>
-            <td>{student.grade}</td>
-            <td><button onClick={(e) => this.handleEdit(e)}>Edit</button></td>
-            <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <table>
+          <tbody>
+            <tr>
+              <td>{student.name}</td>
+              <td>{student.email}</td>
+              <td>{student.gender.gender}</td>
+              <td>{student.grade}</td>
+              <td><button onClick={(e) => this.handleEdit(e)}>Edit</button></td>
+              <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     )
   }
 }

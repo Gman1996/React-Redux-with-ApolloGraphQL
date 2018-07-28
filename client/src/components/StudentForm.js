@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from "react-dom";
 import {graphql, compose} from 'react-apollo';
 import ListStudents from './ListStudents';
+import Edit from './Edit';
 import {getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation, deleteStudentMutation} from '../queries/queries';
 
 class StudentForm extends Component {
@@ -9,6 +10,8 @@ class StudentForm extends Component {
     super(props);
     this.state = {
       toggle: false,
+      toggleEdit: false,
+      editStudentId: '',
       registerName: '',
       registerEmail: '',
       registerGrade: 0,
@@ -23,27 +26,34 @@ class StudentForm extends Component {
     }));
   }
 
-
   delete = (id) =>{
-    alert('deleted' + id);
     this.props.deleteStudentMutation({
       variables: {
         id: id,
       },
       refetchQueries: [{query: getStudentsQuery}]
     }).catch((err) => {console.log(err);});
+    alert('deleted');
   }
 
-  edit = (id) =>{
-    alert('edited' + id);
-    //   this.props.editStudentMutation({
-    //   variables: {
-    //     id: '5b54af3b1024641028a153ce',
-    //     name: (this.state.registerName.trim() !== '')?this.state.registerName:'' ,
-    //     email: (this.state.registerEmail.trim() !== '')?this.state.registerEmail:'' ,
-    //     grade: (this.state.registerGrade.trim() !== '')?this.state.registerGrade:'' ,
-    //   }
-    // }).catch((err) => {console.log(err);});
+  toggleEdit = (id) =>{
+    this.setState (prevState => ({
+      toggleEdit: !prevState.toggleEdit,
+      editStudentId: id
+    }));
+  }
+
+  update = (student) =>{
+    this.props.editStudentMutation({
+    variables: {
+        id: this.state.editStudentId,
+        name: student.name,
+        email: student.email,
+        grade: student.grade
+    },
+    refetchQueries: [{query: getStudentsQuery}]
+    }).catch((err) => console.log(err));
+    alert('updated');
   }
 
   studentSubmit = (e) =>{
@@ -89,25 +99,32 @@ class StudentForm extends Component {
                   key={student.id}
                   student={student}
                   delete={(e)=> this.delete(e)}
-                  edit={(e)=> this.edit(e)}
+                  toggleEdit={(e)=> this.toggleEdit(e)}
                  />
               );
             }): null
           }
         </div>
+        <div>
+          {
+            (this.state.toggleEdit)?
+            <Edit update = {this.update} studentDetails = {data.students.filter((student) => student.id == this.state.editStudentId )} />
+            : null
+          }
+        </div>
         <div className='register'>
-            Register Student
+            <h3>Register Student</h3>
             <div>
-                <input type="name" onChange={(e) => this.setState({registerName: e.target.value})} placeholder="name"/>
+                <input type="text" onChange={(e) => this.setState({registerName: e.target.value})} placeholder="name"/>
             </div>
             <div>
                 <input type="email" onChange={(e) => this.setState({registerEmail: e.target.value})} placeholder="email"/>
             </div>
             <div>
-                <input type="name" onChange={(e) => this.setState({registerGender: e.target.value})} placeholder="gender"/>
+                <input type="text" onChange={(e) => this.setState({registerGender: e.target.value})} placeholder="gender"/>
             </div>
             <div>
-                <input type="name" onChange={(e) => this.setState({registerGrade: e.target.value})} placeholder="grade"/>
+                <input type="text" onChange={(e) => this.setState({registerGrade: e.target.value})} placeholder="grade"/>
             </div>
             <div>
                 <button onClick={(e) => this.studentSubmit(e)}>Submit</button>
