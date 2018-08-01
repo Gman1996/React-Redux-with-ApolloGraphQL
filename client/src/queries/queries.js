@@ -7,28 +7,18 @@ const getStudentsQuery = gql `
       name
       email
       grade
-      gender{
-        gender
-      }
+      gender
     }
   }
 `
 
 const addStudentMutation = gql `
-  mutation($name: String!, $email: String!, $grade: Int!){
-    addStudent(name: $name, email: $email, grade: $grade){
+  mutation($name: String!, $email: String!, $grade: Int!, $gender: String!){
+    addStudent(name: $name, email: $email, grade: $grade, gender: $gender){
       id
       name
       email
       grade
-    }
-  }
-`
-
-const addGenderMutation = gql `
-  mutation($gender: String!){
-    addGender(gender: $gender){
-      id
       gender
     }
   }
@@ -52,7 +42,8 @@ const deleteStudentMutation = gql `
       name
       email
       grade
+      gender
     }
   }
 `
-export { getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation, deleteStudentMutation };
+export { getStudentsQuery, addStudentMutation, editStudentMutation, deleteStudentMutation };

@@ -1,7 +1,6 @@
 //Imports
 const graphql = require('graphql');
 const studentModel = require('../model/student');
-const studentGenderModel = require('../model/gender');
 
 const {
   GraphQLObjectType,
@@ -12,17 +11,6 @@ const {
   GraphQLID,
   GraphQLList,
 } = graphql;
-
-//Gender
-const StudentGenderType = new GraphQLObjectType({
-  name: 'Gender',
-  fields: () => ({
-    id: {type:GraphQLID},
-    gender: {
-      type: GraphQLString
-    }
-  })
-});
 
 //Student Info
 const StudentType = new GraphQLObjectType({
@@ -39,10 +27,7 @@ const StudentType = new GraphQLObjectType({
       type: GraphQLInt
     },
     gender: {
-      type: StudentGenderType,
-      resolve(parentValue, args){
-        return studentGenderModel.findById(parentValue.id);
-      }
+      type: GraphQLString,
     }
   })
 });
@@ -80,15 +65,22 @@ const mutation = new GraphQLObjectType({
             args:{
                 name: {type: new GraphQLNonNull(GraphQLString)},
                 email: {type: new GraphQLNonNull(GraphQLString)},
-                grade: {type: new GraphQLNonNull(GraphQLInt)}
+                grade: {type: new GraphQLNonNull(GraphQLInt)},
+                gender: {type: new GraphQLNonNull(GraphQLString)}
             },
-            resolve(parentValue, args){
-              let toResolve = new studentModel({
-                name: args.name,
-                email: args.email,
-                grade: args.grade
-              });
-              return toResolve.save();
+            async resolve(parentValue, args){
+              try{
+                let toResolve = new studentModel({
+                  name: args.name,
+                  email: args.email,
+                  grade: args.grade,
+                  gender: args.gender
+                });
+                return toResolve.save();
+              }
+              catch(err){
+                throw err.message
+              }
             }
         },
         deleteStudent:{
@@ -122,18 +114,6 @@ const mutation = new GraphQLObjectType({
               .catch((err) => {
                 console.log(err)
               });
-            }
-        },
-        addGender:{
-            type:StudentGenderType,
-            args:{
-                gender: {type: new GraphQLNonNull(GraphQLString)},
-            },
-            resolve(parentValue, args){
-              let toResolve = new studentGenderModel({
-                gender: args.gender,
-              });
-              return toResolve.save();
             }
         }
       }

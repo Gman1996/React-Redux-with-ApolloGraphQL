@@ -14,7 +14,14 @@ app.use(cors());
 
 app.use('/graphql', expressGraphQL({
     schema:schema,
-    graphiql:true
+    graphiql:true,
+    formatError: error => ({
+    message: error.message,
+    state: error.originalError,
+    locations: error.locations,
+    path: error.path,
+    statuscode: 100
+  }),
 }));
 
 // Connect to MongoDB

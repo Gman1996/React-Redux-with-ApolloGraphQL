@@ -23,7 +23,7 @@ class ListStudents extends Component {
             <tr>
               <td>{student.name}</td>
               <td>{student.email}</td>
-              <td>{student.gender.gender}</td>
+              <td>{student.gender}</td>
               <td>{student.grade}</td>
               <td><button onClick={(e) => this.handleEdit(e)}>Edit</button></td>
               <td><button onClick={(e) => this.handleDelete(e)}>Delete</button></td>

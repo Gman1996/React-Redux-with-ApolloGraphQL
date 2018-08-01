@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import {graphql, compose} from 'react-apollo';
 import ListStudents from './ListStudents';
 import Edit from './Edit';
-import {getStudentsQuery, addStudentMutation, addGenderMutation, editStudentMutation, deleteStudentMutation} from '../queries/queries';
+import {getStudentsQuery, addStudentMutation, editStudentMutation, deleteStudentMutation} from '../queries/queries';
 
 class StudentForm extends Component {
   constructor(props){
@@ -29,10 +29,10 @@ class StudentForm extends Component {
   delete = (id) =>{
     this.props.deleteStudentMutation({
       variables: {
-        id: id,
+        id: id
       },
       refetchQueries: [{query: getStudentsQuery}]
-    }).catch((err) => {console.log(err);});
+    }).then((res) => {console.log(res)});
     alert('deleted');
   }
 
@@ -49,7 +49,8 @@ class StudentForm extends Component {
         id: this.state.editStudentId,
         name: student.name,
         email: student.email,
-        grade: student.grade
+        grade: student.grade,
+        gender: student.gender
     },
     refetchQueries: [{query: getStudentsQuery}]
     }).catch((err) => console.log(err));
@@ -63,17 +64,17 @@ class StudentForm extends Component {
     variables: {
       name: this.state.registerName,
       email: this.state.registerEmail,
-      grade: this.state.registerGrade
+      grade: this.state.registerGrade,
+      gender: this.state.registerGender
     },
     refetchQueries: [{query: getStudentsQuery}]
-    });
-
-    // this.props.addGenderMutation({
-    // variables: {
-    //   gender: this.state.registerGender
-    // },
-    // refetchQueries: [{query: getStudentsQuery}]
-    // });
+  })
+  .then((response) => {
+    console.log(response)
+  })
+  .catch((err) => {
+    console.log(err.graphQLErrors)
+  });
   }
 
   render(){
@@ -82,14 +83,12 @@ class StudentForm extends Component {
     if(data.loading){
       return renderHTML = (<div>Loading...</div>)
     }
-
     return(
       <div>
         {renderHTML}
         <p>
           <button type='button' onClick={(e) => this.toggleStudentsView(e)}>View Students</button>
         </p>
-
         <div>
           {
             (this.state.toggle)?
@@ -138,7 +137,6 @@ class StudentForm extends Component {
 export default compose(
   graphql(getStudentsQuery,{name: "getStudentsQuery"}),
   graphql(addStudentMutation,{name: "addStudentMutation"}),
-  graphql(addGenderMutation,{name: "addGenderMutation"}),
   graphql(editStudentMutation,{name: "editStudentMutation"}),
   graphql(deleteStudentMutation,{name: "deleteStudentMutation"})
 )

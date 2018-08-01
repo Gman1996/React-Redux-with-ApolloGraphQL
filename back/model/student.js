@@ -12,6 +12,9 @@ const StudentInfoSchema = new Schema({
   grade: {
     type: Number
   },
+  gender: {
+    type: String
+  }
 });
 
 module.exports = mongoose.model('student', StudentInfoSchema);
